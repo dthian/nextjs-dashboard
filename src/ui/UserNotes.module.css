@@ -1,0 +1,22 @@
+.noteInputBorderRound {
+    border-radius: 25px;
+    border: 2px solid #2146ad;
+    padding: 20px;
+    margin: 10px;
+    width: w-2/4;
+    box-shadow: 0px 0px 5px 2px #888888;
+}
+
+.noteBorderRound {
+    border-radius: 25px;
+    border: 2px solid #2146ad;
+    padding: 20px;
+    margin: 10px;
+}
+
+.noteBorderRoundUrgent {
+    border-radius: 25px;
+    border: 2px solid #ad2121;
+    padding: 20px;
+    margin: 10px;
+}

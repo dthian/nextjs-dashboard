@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global looks for buttons */
+.btn {
+    border-radius: 10px;
+    @apply font-bold py-2 px-4 rounded;
+}
+
+.btn-blue {
+    border-radius: 10px;
+    @apply bg-blue-500 border-blue-500 border-2 text-white;
+}
+.btn-blue:hover {
+    border-radius: 10px;
+    @apply bg-blue-700 border-blue-500 border-2;
+}
+
+.btn-red {
+    border-radius: 10px;
+    @apply border-red-700 border-2 text-black;
+}
+.btn-red-selected {
+    border-radius: 10px;
+    @apply border-red-700 border-2 text-black;
+}
+.btn-red:hover {
+    border-radius: 10px;
+    @apply border-red-700 border-2 bg-red-300 text-black;
+}
+
+.input {
+    border-radius: 10px;
+    border: 2px solid #787a81;
+    margin: 10px 0px;
+    @apply py-2 px-4 
+}
