@@ -65,7 +65,7 @@ const notesReducer = (state: INotesState, action: INotesAction) : typeof initial
             localStorage.setItem(NOTES_KEY, JSON.stringify(filteredNotes));
             return {
                 ... state,
-                data: state.data.filter(item => item.id !== notes[0]!.id)
+                data: filteredNotes
             };
             break;
         case NotesActionType.INIT:
