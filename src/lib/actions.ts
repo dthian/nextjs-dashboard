@@ -1,6 +1,4 @@
-
 "use server";
-import { sql } from '@vercel/postgres';
 import { prisma } from "./prisma";
 
 // Note: Importing Prima results in a conflict of 
@@ -8,7 +6,7 @@ import { prisma } from "./prisma";
 import { type notes } from "@prisma/client";
 import { ForceNoteSchema, type Note } from "./data";
 
-// Insert Notes Records for a given user
+// Sever Actions - Insert Notes Records for a given user
 export async function uploadUserNotes(userId: string, userNotesRaw: Note[]) {
   try {
     const dataNotes:notes[] = [];
@@ -23,10 +21,17 @@ export async function uploadUserNotes(userId: string, userNotesRaw: Note[]) {
         isUrgent: clientData.isUrgent});
     });
 
+    // First clear any existing user's notes that are in the table.
+    await prisma.notes.deleteMany({
+      where: {
+        userId: userId.toLowerCase(), 
+      },
+    })
+
     // Finally fire off the insert query
     await prisma.notes.createMany({
       data:dataNotes,
-      skipDuplicates: true
+      skipDuplicates: false,
     });
 
     // For now provide a simple pass-fail indication of success.
@@ -38,7 +43,7 @@ export async function uploadUserNotes(userId: string, userNotesRaw: Note[]) {
   return false;
 }
 
-// Grab Notes Records for a given user
+// Sever Actions - Grab Notes Records for a given user
 export async function downloadUserNotes(userId: string) {
   try {
     const records = await prisma.notes.findMany({
@@ -47,6 +52,7 @@ export async function downloadUserNotes(userId: string) {
 
     const clientNotes:Note[] = [];
     records.forEach((dbNote)=>{
+      console.log("-> " + dbNote.isUrgent);
       clientNotes.push({
         id: Number(dbNote.noteId), 
         title: dbNote.title, 

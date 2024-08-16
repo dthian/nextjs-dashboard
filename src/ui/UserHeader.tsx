@@ -1,12 +1,12 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import React from "react";
 import Image from "next/image";
 import { NotesActionType, NotesContext } from "~/context/NoteProviderContext";
-import { Note } from "~/lib/data";
 import { downloadUserNotes, uploadUserNotes } from "~/lib/actions";
 
+// Header Control above our notes for summary information (how many urgent notes)
+// and as well as import / export controls for note data.
 export const UserHeader = () => {
     const { notes, dispatch } = React.useContext(NotesContext);
 
@@ -52,14 +52,14 @@ export const UserHeader = () => {
     return (
         <div className="flex items-center justify-center flex-row">
             <button onClick={onImportClicked}>
-                <img src="/import.png" 
+                <Image src="/import.png" 
                     width={100}
                     height={200}
                     alt="Import Notes"/>
             </button>
             | 
             <button onClick={onExportClicked}>
-                <img src="/export.png" 
+                <Image src="/export.png" 
                         width={100}
                         height={200}
                         alt="Export Notes"/>

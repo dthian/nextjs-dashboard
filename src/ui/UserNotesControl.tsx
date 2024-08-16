@@ -34,12 +34,12 @@ const pullNoteFromForm = (e: React.FormEvent): Note | undefined => {
   return newNote;
 };
 
-// Control containing all the note for the current user.
+// Main Note Control for adding, editing, and removing notes.
 export const UserNotesControl = () => {
   const { notes, dispatch } = useContext(NotesContext);
 
   // Sanity check Display loading UI when data source is not yet ready.
-  // TODO - have a parent grouping control that displays nicer loading UI.
+  // TODO - Displays nicer loading UI.
   if (!notes.isInitialized) {
     return ( 
       <div className="flex items-center justify-center">
