@@ -21,12 +21,10 @@
 */
 
 import { UserNotesControl } from "~/ui/UserNotesControl";
+import { UserHeader } from "~/ui/UserHeader";
+import { NotesProvider } from "~/context/NoteProviderContext";
 
 export default function HomePage() {
-  
-
-
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -34,7 +32,10 @@ export default function HomePage() {
           Note Taking App
         </h1>
         <span>
-          <UserNotesControl />
+          <NotesProvider>
+            <UserHeader/>
+            <UserNotesControl />
+          </NotesProvider>
         </span>
       </div>
     </main>

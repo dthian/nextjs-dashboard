@@ -1,14 +1,12 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { type Note, UserDefaultNoteData } from "~/lib/data";
 import styles from './UserNotes.module.css';
-import { create } from "domain";
-
-const NOTES_KEY = "notes";
+import { NotesContext, NotesActionType} from "~/context/NoteProviderContext";
 
 // Create a new note for a given form event
-const createNote = (e: React.FormEvent): Note | undefined => {
+const pullNoteFromForm = (e: React.FormEvent): Note | undefined => {
   // Ensure we grab the right data mapped to the ids
   const formInput = e.target as typeof e.target & {
     title: {value: string},
@@ -18,8 +16,6 @@ const createNote = (e: React.FormEvent): Note | undefined => {
   // double check to see if we got that data
   const title = formInput.title.value;
   const content = formInput.content.value;
-  console.log("title: " + title);
-  console.log("content: " + content);
 
   // Sanity checks
   if (title.trim().length == 0 || content.trim().length == 0) {
@@ -40,84 +36,11 @@ const createNote = (e: React.FormEvent): Note | undefined => {
 
 // Control containing all the note for the current user.
 export const UserNotesControl = () => {
-  const [notes, setNotes] = useState<Note[] | undefined>(undefined);
+  const { notes, dispatch } = useContext(NotesContext);
 
-  // On mount, restore saved notes from local storage. This 
-  // could be from a remote source in the future.
-  useEffect(()=>{
-    const savedBrowserNotesRAW:string | null = localStorage.getItem(NOTES_KEY);
-    if (savedBrowserNotesRAW == undefined) {
-      setNotes(UserDefaultNoteData);
-      return;
-    }
-
-    try {
-      const savedNotes:Note[] = JSON.parse(savedBrowserNotesRAW) as Note[]; 
-      if (savedNotes === undefined) {
-        console.log("Error when attempting to deserialized notes from local storage");
-        return;
-      }
-      setNotes(savedNotes);
-    } catch (ex) {
-      console.error(ex);
-    }
-  }, []);
-
-  // Submit and create a new note
-  const submitNote = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newNote: Note | undefined = createNote(e);
-    
-    // Warn user if invalid inputs are detected.
-    if (newNote === undefined) {
-      alert("Please enter a valid title and content");
-      return;
-    }
-
-    setNotes(()=>{
-      const nextNotes:Note[] = [newNote, ...notes!];
-      localStorage.setItem(NOTES_KEY, JSON.stringify(nextNotes));
-      return nextNotes;
-    });
-  };
-
-  // Remove an existing note
-  const completeNote = (note:Note) => {
-    const modifiedNotes = notes!.filter(item => item.id !== note.id);
-    setNotes(modifiedNotes);
-    setNotes(()=>{
-      localStorage.setItem(NOTES_KEY, JSON.stringify(modifiedNotes));
-      return modifiedNotes;
-    });
-  };
-
-  // Toggle an existing note
-  const toggleNoteUrgent = (note:Note) => {
-    const updatedNote = {
-      id : note.id,
-      title: note.title,
-      content: note.content,
-      date: note.date,
-      isUrgent: !note.isUrgent
-  };
-
-    // Now Update and replace existing notes
-    const modifiedNotes:Note[] = [];
-    notes!.forEach((note)=>{
-      if (note.id === updatedNote.id) {
-        modifiedNotes.push(updatedNote);
-      } else {
-        modifiedNotes.push(note);
-      }
-    });
-    setNotes(()=>{
-      localStorage.setItem(NOTES_KEY, JSON.stringify(modifiedNotes));
-      return modifiedNotes;
-    });
-  };
-
-  // Display loading UI on mount when grabbing data.
-  if (notes == undefined) {
+  // Sanity check Display loading UI when data source is not yet ready.
+  // TODO - have a parent grouping control that displays nicer loading UI.
+  if (!notes.isInitialized) {
     return ( 
       <div className="loading">
         Loading.....
@@ -125,7 +48,32 @@ export const UserNotesControl = () => {
     );
   }
 
-  // Else, we note data is ready, display them.
+  // Else Data is ready, create callback handlers for mutating notes
+  const submitNote = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newNote: Note | undefined = pullNoteFromForm(e);
+    
+    // Warn user if invalid inputs are detected.
+    if (newNote === undefined) {
+      alert("Please enter a valid title and content");
+      return;
+    }
+
+    dispatch({ type: NotesActionType.ADD, notes:[newNote]});
+  };
+
+  // Remove an existing note
+  const completeNote = (note:Note) => {
+    dispatch({ type: NotesActionType.REMOVE, notes:[note]});
+  };
+
+  // Toggle an existing note
+  const toggleNoteUrgent = (note:Note) => {
+    note.isUrgent = !note.isUrgent;
+    dispatch({ type:NotesActionType.UPDATE, notes:[note]});
+  };
+
+  // Finally, display UI Notes with data.
   return (
     <>
       {/* Ability to add notes through form */}
@@ -138,7 +86,7 @@ export const UserNotesControl = () => {
       </div>
 
       { // Listview of the User's current notes
-        notes.map((note)=>{
+        notes.data.map((note)=>{
           const noteContainerStyle = note.isUrgent ? styles.noteBorderRoundUrgent : styles.noteBorderRound;
           return (
             <div className={noteContainerStyle} key={note.id}>
