@@ -1,3 +1,5 @@
+![screenshot](https://github.com/user-attachments/assets/47ee62b1-dcb4-43e3-9568-9bd137dd361e)
+
 # Frontend Interview Starter
 
 - Note App website where Users can add and update notes.
