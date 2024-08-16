@@ -69,6 +69,7 @@ const notesReducer = (state: INotesState, action: INotesAction) : typeof initial
             };
             break;
         case NotesActionType.INIT:
+            localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
             return {
                 ... state,
                 isInitialized:true,
