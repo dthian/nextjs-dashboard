@@ -1,4 +1,5 @@
 // Data definitions for our note records
+import { z } from 'zod';
 export interface Note {
     id: number, 
     title : string,
@@ -6,6 +7,16 @@ export interface Note {
     date: string,
     isUrgent: boolean
 }
+
+// Used to enforce data structs before it is inserted into the DB
+export const ForceNoteSchema = z.object({
+    id: z.coerce.string(),
+    title: z.string(),
+    content: z.string(),
+    date: z.string(),
+    isUrgent: z.boolean()
+});
+
 
 // Default data by which to display notes
 export const UserDefaultNoteData:Note[] = [

@@ -42,7 +42,7 @@ export const UserNotesControl = () => {
   // TODO - have a parent grouping control that displays nicer loading UI.
   if (!notes.isInitialized) {
     return ( 
-      <div className="loading">
+      <div className="flex items-center justify-center">
         Loading.....
       </div>
     );
@@ -78,7 +78,7 @@ export const UserNotesControl = () => {
     <>
       {/* Ability to add notes through form */}
       <div className={styles.noteInputBorderRound}>
-        <form className="container flex flex-col" onSubmit={submitNote}>
+        <form className="flex flex-col" onSubmit={submitNote}>
             <input className="input" id="title" name="title" placeholder="Note Title" /> 
             <input className="input" id="content" name="content" placeholder="Note Content" />
             <button className="btn btn-blue" type="submit">Save Note</button>

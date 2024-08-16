@@ -31,7 +31,7 @@ export default function HomePage() {
         <h1 className="text-5xl font-extrabold tracking-tight">
           Note Taking App
         </h1>
-        <span>
+        <span style={{width:900}}>
           <NotesProvider>
             <UserHeader/>
             <UserNotesControl />

@@ -37,7 +37,7 @@ const notesReducer = (state: INotesState, action: INotesAction) : typeof initial
     const {type, notes} = action;
     switch(type) {
         case NotesActionType.ADD:
-            const updatedNotes = [...state.data, notes[0]!];
+            const updatedNotes = [notes[0]!, ...state.data];
             localStorage.setItem(NOTES_KEY, JSON.stringify(updatedNotes));
             return { 
                 ...state,
